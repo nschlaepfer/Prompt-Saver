@@ -1,42 +1,47 @@
-// Create the "Save Prompt" button
-const savePromptButton = document.createElement('button');
-savePromptButton.textContent = 'Save Prompt';
-savePromptButton.id = 'save-prompt-btn';
-savePromptButton.style.padding = '2px';
-savePromptButton.style.border = 'none';
-savePromptButton.style.borderRadius = '20px';
-savePromptButton.style.color = '#fff';
-savePromptButton.style.backgroundColor = '#6e6e80';
-savePromptButton.style.fontSize = '10px';
-savePromptButton.style.fontWeight = '150';
-savePromptButton.style.marginBottom = '10px';
-savePromptButton.style.width = '80px';
+// Find the "Continue" button
+const continueButton = document.querySelector('#request-code-btn');
 
-// Find the target button element by its class name
-const targetButton = document.querySelector('button[class^="p-1 rounded-md hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400"]');
+// Create the custom button
+const selectFileButton = document.createElement('button');
+selectFileButton.textContent = 'Select File';
+selectFileButton.style.padding = '2px';
+selectFileButton.style.border = 'none';
+selectFileButton.style.borderRadius = '20px';
+selectFileButton.style.color = '#fff';
+selectFileButton.style.backgroundColor = '#6e6e80';
+selectFileButton.style.fontSize = '10px';
+selectFileButton.style.fontWeight = '150';
+selectFileButton.style.marginRight = '5px';
 
-// Insert the "Save Prompt" button next to the target button
-if (targetButton) {
-  targetButton.parentNode.insertBefore(savePromptButton, targetButton.nextSibling);
+// Insert the custom button next to the "Continue" button
+if (continueButton) {
+  continueButton.parentNode.insertBefore(selectFileButton, continueButton.nextSibling);
 }
 
-// Add an event listener to the "Save Prompt" button
-savePromptButton.addEventListener('click', () => {
-  const textarea = document.querySelector('textarea[tabindex="0"]');
-  const prompt = textarea.value.trim();
+// Add an event listener to the custom button
+selectFileButton.addEventListener('click', () => {
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
 
-  if (prompt !== '') {
-    savePromptToFile(prompt);
-  }
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (file) {
+      readFileContents(file);
+    }
+  });
+
+  fileInput.click();
 });
 
-// Function to save prompt text to a file
-function savePromptToFile(prompt) {
-  const blob = new Blob([prompt], { type: 'text/plain' });
-  const a = document.createElement('a');
-  const url = URL.createObjectURL(blob);
-  a.href = url;
-  a.download = 'saved_prompt.txt';
-  a.click();
-  URL.revokeObjectURL(url);
+// Function to read file contents and populate the textarea
+function readFileContents(file) {
+  const reader = new FileReader();
+
+  reader.addEventListener('load', (event) => {
+    const contents = event.target.result;
+    const textarea = document.querySelector('textarea[tabindex="0"]');
+    textarea.value = contents;
+  });
+
+  reader.readAsText(file);
 }
