@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "Prompt Saver",
+  "version": "1.0",
+  "description": "Save prompts on OpenAI Chat",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["https://openai.com/chat*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
